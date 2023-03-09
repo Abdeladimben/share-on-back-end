@@ -13,4 +13,6 @@ public interface ProfilRepository extends JpaRepository<Profil, Long>{
 	public Optional<Profil> findByUuid(String uuid);
 	
 	public Optional<Profil> findByUtilisateur_Email(String email);
+	
+	public Optional<Profil> findByNomUtilisateur(String nomUtilisateur);
 }

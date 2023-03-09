@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -35,5 +37,8 @@ public class Post extends BaseModel{
 	
 	@OneToMany
 	private List<Likes> likes;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	private Profil profil;
 	
 }

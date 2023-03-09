@@ -51,7 +51,7 @@ public class Profil extends BaseModel{
 	@OneToOne
 	private Account utilisateur;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	private List<Post> posts;
 	
 	@ManyToMany(fetch = FetchType.LAZY)

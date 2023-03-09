@@ -1,25 +1,21 @@
 package com.example.share.dto;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class ProfilForPostDTO {
 	
-	private String text;
+	private String uuid;
 	
-    private byte[] image;
+	private String nomUtilisateur;
 	
-	private List<LikesDTO> likes;
-	
-	private ProfilForPostDTO profil;
-	
+    private byte[] photoProfil;
+    
 }

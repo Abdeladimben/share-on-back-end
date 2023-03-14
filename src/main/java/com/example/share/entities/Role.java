@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where;
 import com.example.share.enums.Roles;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table
+@Builder
 @Where(clause = "is_delete = false and is_statut = true")
 public class Role extends BaseModel{
 	

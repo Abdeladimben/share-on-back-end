@@ -49,7 +49,7 @@ public class ProfilServiceImpl implements ProfilService{
 														.build();
 			return pageResponse;
 		}else
-			throw new NoContentException(ErrorCode.PR002.getMessage(),ErrorCode.PR002, HttpStatus.NO_CONTENT);
+			throw new NoContentException(ErrorCode.PR003.getMessage(),ErrorCode.PR003, HttpStatus.NO_CONTENT);
 		
 	}
 

@@ -13,6 +13,8 @@ public interface PostRepository extends JpaRepository<Post, Long>{
 	
 	public Optional<Post> findByUuid(String uuid);
 	
+	public List<Post> findByProfil_NomUtilisateur(String nomUtilistateur);
+	
 	public Page<Post> findAllByOrderByIdAsc(Pageable pageable);
 	
 }

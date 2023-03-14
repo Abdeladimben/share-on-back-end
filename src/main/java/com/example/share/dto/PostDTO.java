@@ -14,6 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostDTO {
 	
+	private String uuid;
+	
 	private String text;
 	
     private byte[] image;

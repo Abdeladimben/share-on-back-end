@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.share.entities.Account;
@@ -27,6 +28,9 @@ public class DbInit {
 	
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@Transactional
 	@PostConstruct
@@ -75,7 +79,7 @@ public class DbInit {
 				.email("admin@gmail.com")
 				.nom("admin")
 				.prenom("adminprenom")
-				.password("123456")
+				.password(passwordEncoder.encode("123456"))
 				.roles(new HashSet<Role>(Arrays.asList(role)))
 				.build();
 		accountRepository.save(account);

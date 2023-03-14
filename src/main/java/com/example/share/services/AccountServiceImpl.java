@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,16 @@ import com.example.share.dto.AccountResponseDTO;
 import com.example.share.dto.AccountWithoutRoleDTO;
 import com.example.share.dto.UpdatePasswordDTO;
 import com.example.share.entities.Account;
+import com.example.share.entities.Role;
 import com.example.share.enums.ErrorCode;
+import com.example.share.enums.Roles;
 import com.example.share.exception.EmailAlreadyExistsException;
 import com.example.share.exception.GeneralException;
 import com.example.share.helpers.LoginResponse;
 import com.example.share.mapper.AccountRequestMapper;
 import com.example.share.mapper.AccountWithoutRoleMapper;
 import com.example.share.repositories.AccountRepository;
+import com.example.share.repositories.RoleRepository;
 import com.example.share.serviceInterfaces.AccountService;
 
 @Service
@@ -37,6 +41,9 @@ public class AccountServiceImpl implements AccountService{
 	
 	@Autowired
 	AccountRepository accountRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	@Autowired
 	UserDetailServiceImpl userDetailServiceImpl;
@@ -60,7 +67,7 @@ public class AccountServiceImpl implements AccountService{
 	public LoginResponse login(AccountLoginDTO accountLoginDTO) {
 		// TODO Auto-generated method stub
 		
-		Optional<UserDetailsImpl> user =Optional.ofNullable(userDetailServiceImpl.loadUserByUsername(accountLoginDTO.getEmail())) ;
+		Optional<UserDetails> user =Optional.ofNullable(userDetailServiceImpl.loadUserByUsername(accountLoginDTO.getEmail())) ;
 		if(user.isPresent()) {
 			AccountResponseDTO accountResponseDTO=userDetailServiceImpl.convertirAccountToDTO();
 			Set<GrantedAuthority> authorities=new HashSet<>();
@@ -85,12 +92,22 @@ public class AccountServiceImpl implements AccountService{
 	@Override
 	public AccountRequestDTO create(AccountWithoutRoleDTO accountWithoutRoleDTO) throws EmailAlreadyExistsException {
 		// TODO Auto-generated method stub
-		Account user = accountRepository.findByEmail(accountWithoutRoleDTO.getEmail())
-				.orElseThrow(()-> new EmailAlreadyExistsException(ErrorCode.AE100.getMessage(),ErrorCode.AE100,HttpStatus.CONFLICT));
-		Account accountToAdd=accountWithoutRoleMapper.DtotoEntity(accountWithoutRoleDTO);
-		accountRepository.save(accountToAdd);
-		AccountRequestDTO accountReturned = accountRequestMapper.EntityToDto(accountToAdd);
-		return accountReturned;
+		Optional<Account> user = accountRepository.findByEmail(accountWithoutRoleDTO.getEmail());
+		if (!user.isPresent()) {
+			Account accountToAdd=accountWithoutRoleMapper.DtotoEntity(accountWithoutRoleDTO);
+			accountToAdd.setPassword(passwordEncoder.encode(accountToAdd.getPassword()));
+			Role role=roleRepository.findByLibelle(Roles.ROLE_USER.toString());
+			Set<Role> setRoles = new HashSet<>();
+			setRoles.add(role);
+			accountToAdd.setRoles(setRoles);
+			accountRepository.save(accountToAdd);
+			AccountRequestDTO accountReturned = accountRequestMapper.EntityToDto(accountToAdd);
+			return accountReturned;
+		}else {
+			throw new EmailAlreadyExistsException(ErrorCode.AE100.getMessage(),ErrorCode.AE100,HttpStatus.CONFLICT);
+		}
+		
+		
 	}
 
 	@Override

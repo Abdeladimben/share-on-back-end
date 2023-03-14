@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import com.example.share.enums.ErrorCode;
 import com.example.share.exception.ErrorDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,7 +27,12 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 		response.setContentType(MediaType.APPLICATION_JSON.toString());
 		response.setStatus(HttpStatus.UNAUTHORIZED.value()); 
 		System.out.println(request.getRequestURI());
-		response.getOutputStream().println(objectMapper.writeValueAsString(new ErrorDetail(HttpStatus.UNAUTHORIZED.name(),request.getRequestURL().toString())));
+		response.getOutputStream()
+						.println(
+								objectMapper.writeValueAsString(
+												new ErrorDetail(ErrorCode.U005,HttpStatus.UNAUTHORIZED.name(),request.getRequestURL().toString())
+											)
+						);
 		
 	}
 

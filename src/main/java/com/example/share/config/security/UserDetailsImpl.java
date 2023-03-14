@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.share.enums.Roles;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +21,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserDetailsImpl implements UserDetails{
-
-	private User user;
 	
 	private String email;
 	
@@ -30,23 +30,19 @@ public class UserDetailsImpl implements UserDetails{
 	
 	private Set<Roles> role;
 	
-	public UserDetailsImpl(User user) {
-		this.user=user;
-	}
-	
-	public UserDetailsImpl(String email,String password,Set<Roles> role) {
-		this.user=user;
-	}
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		Set<GrantedAuthority> authorities=new HashSet<>();
-		role.stream()
-			.map(r->
-				authorities.add(new SimpleGrantedAuthority(r.getRole())
-			)
-		);
+		if (role!=null) {
+			role.stream()
+				.map(r->
+					authorities.add(new SimpleGrantedAuthority(r.getRole())
+				)
+			);
+		}
+		
 		return authorities;
 	}
 

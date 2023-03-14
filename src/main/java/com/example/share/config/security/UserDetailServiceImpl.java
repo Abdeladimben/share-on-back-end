@@ -33,14 +33,14 @@ public class UserDetailServiceImpl implements UserDetailsService{
 	AccountResponseMapper accountResponseMapper;
 
 	@Override
-	public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		
 		account=accountRepository.findByEmail(username);
 		if(account.isPresent()) {
 			UserDetailsImpl userDetailsImpl=new UserDetailsImpl(account.get().getEmail(), account.get().getPassword(), account.get().getRoles().stream().map(Role::getNom).collect(Collectors.toSet()));
 			User user=new User(account.get().getEmail(), account.get().getPassword(),userDetailsImpl.getAuthorities());
-			return new UserDetailsImpl(user);
+			return user;
 		}
 		throw new UsernameNotFoundException("Email Not Found");
 

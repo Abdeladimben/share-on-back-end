@@ -24,14 +24,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 	public static final String AUTHORIZATION_HEADER = "Authorization";
+	
+	public static final String BASE_PACKAGE_CONTROLLER = "com.example.share.controllers";
 
 	
 	private ApiInfo apiInfo() {
-        return new ApiInfo("Mercure Back Rest Apis",
+        return new ApiInfo("SHARE ON Back Rest Apis",
                 "APIs for MyApp.",
                 "1.0",
                 "Terms of service",
-                new Contact("test", "www.org.com", "test@emaildomain.com"),
+                new Contact("test", "www.org.com", "abdeladimbenjabour@gmail.com"),
                 "License of API",
                 "API license URL",
                 Collections.emptyList());
@@ -44,7 +46,7 @@ public class SwaggerConfig {
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE_CONTROLLER))
                 .paths(PathSelectors.any())
                 .build();
     }

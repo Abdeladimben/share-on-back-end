@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/src/main/resources/key/keystore.jks
+/src/main/resources/keys/keystore.jks
 
 ### STS ###
 .apt_generated

@@ -11,12 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.share.dto.AccountResponseDTO;
-import com.example.share.entities.Account;
+import com.example.share.dto.UserResponseDTO;
 import com.example.share.entities.Role;
 import com.example.share.enums.Roles;
-import com.example.share.mapper.AccountResponseMapper;
-import com.example.share.repositories.AccountRepository;
+import com.example.share.mapper.UserResponseMapper;
+import com.example.share.repositories.UserRepository;
 
 import lombok.Getter;
 
@@ -24,30 +23,30 @@ import lombok.Getter;
 public class UserDetailServiceImpl implements UserDetailsService{
 	
 	@Autowired
-	AccountRepository accountRepository;
+	UserRepository userRepository;
 	
 	@Getter
-	private Optional<Account> account;
+	private Optional<com.example.share.entities.User> EUser;
 	
 	@Autowired
-	AccountResponseMapper accountResponseMapper;
+	UserResponseMapper userResponseMapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		
-		account=accountRepository.findByEmail(username);
-		if(account.isPresent()) {
-			UserDetailsImpl userDetailsImpl=new UserDetailsImpl(account.get().getEmail(), account.get().getPassword(), account.get().getRoles().stream().map(Role::getNom).collect(Collectors.toSet()));
-			User user=new User(account.get().getEmail(), account.get().getPassword(),userDetailsImpl.getAuthorities());
+		EUser=userRepository.findByEmailOrUserName(username,username);
+		if(EUser.isPresent()) {
+			UserDetailsImpl userDetailsImpl=new UserDetailsImpl(EUser.get().getEmail(), EUser.get().getPassword(), EUser.get().getRoles().stream().map(Role::getIntitule).collect(Collectors.toSet()));
+			User user=new User(EUser.get().getEmail(), EUser.get().getPassword(),userDetailsImpl.getAuthorities());
 			return user;
 		}
-		throw new UsernameNotFoundException("Email Not Found");
+		throw new UsernameNotFoundException("utilisateur ou password incorrect.");
 
 	}
 	
-	public AccountResponseDTO convertirAccountToDTO() {
-		return account.isPresent()?accountResponseMapper.EntityToDto(account.get()):null;
+	public UserResponseDTO convertirUserToDTO() {
+		return EUser.isPresent()?userResponseMapper.EntityToDto(EUser.get()):null;
 	}
 
 }

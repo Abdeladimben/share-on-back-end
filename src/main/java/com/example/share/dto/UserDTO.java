@@ -14,13 +14,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountResponseDTO {
+public class UserDTO {
 
+	private String uuid;
+	
 	private String email;
 	
 	private String nom;
 	
 	private String prenom;
+	
+	private String password;
 		
 	private String telephone;
 	

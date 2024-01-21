@@ -10,24 +10,25 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.example.share.entities.Account;
+import com.example.share.entities.User;
 import com.example.share.entities.Role;
 import com.example.share.enums.Roles;
-import com.example.share.repositories.AccountRepository;
+import com.example.share.repositories.UserRepository;
 import com.example.share.repositories.RoleRepository;
 
 @Component
-//@Profile("init")
+@Profile("init")
 public class DbInit {
 	
 	@Autowired
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private AccountRepository accountRepository;
+	private UserRepository accountRepository;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -49,8 +50,8 @@ public class DbInit {
 			addRoleAdmin();
 		}else {
 			List<Role> roles=roleRepository.findAll();
-			boolean roleAdmin=roles.stream().map(Role::getNom).collect(Collectors.toList()).contains(Roles.ROLE_ADMIN);
-			boolean roleUser=roles.stream().map(Role::getNom).collect(Collectors.toList()).contains(Roles.ROLE_USER);
+			boolean roleAdmin=roles.stream().map(Role::getIntitule).collect(Collectors.toList()).contains(Roles.ROLE_ADMIN);
+			boolean roleUser=roles.stream().map(Role::getIntitule).collect(Collectors.toList()).contains(Roles.ROLE_USER);
 			if(!roleAdmin) {
 				addRoleAdmin();
 			}else if(!roleUser) {
@@ -61,22 +62,23 @@ public class DbInit {
 	
 	private void addRoleAdmin() {
 		Role role = new Role();
-		role.setNom(Roles.ROLE_ADMIN);
+		role.setIntitule(Roles.ROLE_ADMIN);
 		role.setLibelle(Roles.ROLE_ADMIN.toString());
 		role = roleRepository.save(role);
 	}
 	
 	private void addRoleUser() {
 		Role role = new Role();
-		role.setNom(Roles.ROLE_USER);
+		role.setIntitule(Roles.ROLE_USER);
 		role.setLibelle(Roles.ROLE_USER.toString());
 		role = roleRepository.save(role);
 	}
 	
 	private void addAccountAdmin() {
 		Role role=roleRepository.findByLibelle(Roles.ROLE_ADMIN.toString());
-		Account account=Account.builder()
+		User account=User.builder()
 				.email("admin@gmail.com")
+				.userName("admin1")
 				.nom("admin")
 				.prenom("adminprenom")
 				.password(passwordEncoder.encode("123456"))

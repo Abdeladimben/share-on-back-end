@@ -10,21 +10,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO {
+public class UserRequestDTO {
 
 	private String uuid;
 	
 	private String email;
 	
+	private String userName;
+	
 	private String nom;
 	
 	private String prenom;
-	
-	private String password;
 		
 	private String telephone;
 	

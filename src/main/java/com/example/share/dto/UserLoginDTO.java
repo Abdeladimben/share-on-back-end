@@ -9,16 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountWithoutRoleDTO {
-	
+public class UserLoginDTO {
+
 	private String email;
 	
-	private String nom;
-	
-	private String prenom;
-	
 	private String password;
-		
-	private String telephone;
 	
-}	
+}

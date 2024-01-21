@@ -22,13 +22,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table
+@Table(name = "utilisateur")
 @Builder
 @Where(clause = "is_delete = false and is_statut = true")
-public class Account extends BaseModel{
+public class User extends BaseModel{
 	
 	@Column(unique = true,nullable = false)
 	private String email;
+	
+	@Column(unique = true,nullable = false)
+	private String userName;
 	
 	@Column
 	private String nom;

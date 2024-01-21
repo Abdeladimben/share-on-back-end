@@ -18,29 +18,33 @@ import org.springframework.stereotype.Service;
 import com.example.share.config.security.JwtUtil;
 import com.example.share.config.security.UserDetailServiceImpl;
 import com.example.share.config.security.UserDetailsImpl;
-import com.example.share.dto.AccountLoginDTO;
-import com.example.share.dto.AccountRequestDTO;
-import com.example.share.dto.AccountResponseDTO;
-import com.example.share.dto.AccountWithoutRoleDTO;
+import com.example.share.dto.UserLoginDTO;
+import com.example.share.dto.UserRequestDTO;
+import com.example.share.dto.UserResponseDTO;
+import com.example.share.dto.UserWithoutRoleDTO;
 import com.example.share.dto.UpdatePasswordDTO;
-import com.example.share.entities.Account;
+import com.example.share.entities.User;
 import com.example.share.entities.Role;
 import com.example.share.enums.ErrorCode;
 import com.example.share.enums.Roles;
 import com.example.share.exception.EmailAlreadyExistsException;
 import com.example.share.exception.GeneralException;
+import com.example.share.exception.TokenIsExpiredException;
+import com.example.share.exception.TokenIsNotValidException;
 import com.example.share.helpers.LoginResponse;
-import com.example.share.mapper.AccountRequestMapper;
-import com.example.share.mapper.AccountWithoutRoleMapper;
-import com.example.share.repositories.AccountRepository;
+import com.example.share.mapper.UserRequestMapper;
+import com.example.share.mapper.UserWithoutRoleMapper;
+import com.example.share.repositories.UserRepository;
+
+import antlr.Token;
+
 import com.example.share.repositories.RoleRepository;
-import com.example.share.serviceInterfaces.AccountService;
 
 @Service
-public class AccountServiceImpl implements AccountService{
+public class UserService implements IUserService{
 	
 	@Autowired
-	AccountRepository accountRepository;
+	UserRepository userRepository;
 	
 	@Autowired
 	RoleRepository roleRepository;
@@ -55,34 +59,33 @@ public class AccountServiceImpl implements AccountService{
 	JwtUtil jwtUtil;
 	
 	@Autowired
-	AccountWithoutRoleMapper accountWithoutRoleMapper;
+	UserWithoutRoleMapper userWithoutRoleMapper;
 	
 	@Autowired
-	AccountRequestMapper accountRequestMapper;
+	UserRequestMapper userRequestMapper;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
 	@Override
-	public LoginResponse login(AccountLoginDTO accountLoginDTO) {
+	public LoginResponse login(UserLoginDTO userLoginDTO) {
 		// TODO Auto-generated method stub
-		
-		Optional<UserDetails> user =Optional.ofNullable(userDetailServiceImpl.loadUserByUsername(accountLoginDTO.getEmail())) ;
+		Optional<UserDetails> user =Optional.ofNullable(userDetailServiceImpl.loadUserByUsername(userLoginDTO.getEmail())) ;
 		if(user.isPresent()) {
-			AccountResponseDTO accountResponseDTO=userDetailServiceImpl.convertirAccountToDTO();
+			UserResponseDTO userResponseDTO=userDetailServiceImpl.convertirUserToDTO();
 			Set<GrantedAuthority> authorities=new HashSet<>();
-			accountResponseDTO.getRoles().stream().forEach(role->{
-				authorities.add(new SimpleGrantedAuthority(role.getNom().toString()));
+			userResponseDTO.getRoles().stream().forEach(role->{
+				authorities.add(new SimpleGrantedAuthority(role.getIntitule().toString()));
 			});
 			
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(
-							accountLoginDTO.getEmail(),
-							accountLoginDTO.getPassword(),
+							userLoginDTO.getEmail(),
+							userLoginDTO.getPassword(),
 							authorities
 					)
 			);
-			return new LoginResponse(jwtUtil.generateToken(user.get()),accountResponseDTO);
+			return new LoginResponse(jwtUtil.generateToken(user.get()),userResponseDTO);
 		}else {
 			throw new UsernameNotFoundException("User not found");
 		}
@@ -90,19 +93,19 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public AccountRequestDTO create(AccountWithoutRoleDTO accountWithoutRoleDTO) throws EmailAlreadyExistsException {
+	public UserRequestDTO create(UserWithoutRoleDTO userWithoutRoleDTO) throws EmailAlreadyExistsException {
 		// TODO Auto-generated method stub
-		Optional<Account> user = accountRepository.findByEmail(accountWithoutRoleDTO.getEmail());
+		Optional<User> user = userRepository.findByEmail(userWithoutRoleDTO.getEmail());
 		if (!user.isPresent()) {
-			Account accountToAdd=accountWithoutRoleMapper.DtotoEntity(accountWithoutRoleDTO);
-			accountToAdd.setPassword(passwordEncoder.encode(accountToAdd.getPassword()));
+			User userToAdd=userWithoutRoleMapper.DtotoEntity(userWithoutRoleDTO);
+			userToAdd.setPassword(passwordEncoder.encode(userToAdd.getPassword()));
 			Role role=roleRepository.findByLibelle(Roles.ROLE_USER.toString());
 			Set<Role> setRoles = new HashSet<>();
 			setRoles.add(role);
-			accountToAdd.setRoles(setRoles);
-			accountRepository.save(accountToAdd);
-			AccountRequestDTO accountReturned = accountRequestMapper.EntityToDto(accountToAdd);
-			return accountReturned;
+			userToAdd.setRoles(setRoles);
+			userRepository.save(userToAdd);
+			UserRequestDTO userReturned = userRequestMapper.EntityToDto(userToAdd);
+			return userReturned;
 		}else {
 			throw new EmailAlreadyExistsException(ErrorCode.AE100.getMessage(),ErrorCode.AE100,HttpStatus.CONFLICT);
 		}
@@ -111,10 +114,10 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public AccountRequestDTO updatePassword(UpdatePasswordDTO updatePasswordDTO) throws EmailAlreadyExistsException, GeneralException {
+	public UserRequestDTO updatePassword(UpdatePasswordDTO updatePasswordDTO) throws EmailAlreadyExistsException, GeneralException {
 		// TODO Auto-generated method stub
 		
-		Account user = accountRepository.findByEmail(updatePasswordDTO.getEmail())
+		User user = userRepository.findByEmail(updatePasswordDTO.getEmail())
 				.orElseThrow(()-> new EmailAlreadyExistsException(ErrorCode.AE100.getMessage(),ErrorCode.AE100,HttpStatus.CONFLICT));
 		
 		if( !passwordEncoder.matches(updatePasswordDTO.getPassword(), user.getPassword()) || 
@@ -123,9 +126,22 @@ public class AccountServiceImpl implements AccountService{
 			throw new GeneralException(ErrorCode.U003.getMessage(),ErrorCode.U003,HttpStatus.BAD_REQUEST);
 		
 		user.setPassword(passwordEncoder.encode(updatePasswordDTO.getNouveauPassword()));
-		Account userUpdated= accountRepository.save(user);
-		AccountRequestDTO accountReturned = accountRequestMapper.EntityToDto(userUpdated);
-		return accountReturned;
+		User userUpdated= userRepository.save(user);
+		UserRequestDTO userReturned = userRequestMapper.EntityToDto(userUpdated);
+		return userReturned;
+	}
+
+	@Override
+	public UserRequestDTO info(String accessToken) throws TokenIsExpiredException, TokenIsNotValidException {
+		// TODO Auto-generated method stub
+		if(jwtUtil.isTokenExpired(accessToken)) {
+			throw new TokenIsExpiredException(ErrorCode.T002);
+		}
+		String email = jwtUtil.extractUserEmail(accessToken);
+		Optional<User> oUser = userRepository.findByEmailOrUserName(email, email);
+		User user = oUser.orElseThrow(() -> new TokenIsNotValidException(ErrorCode.T001));
+		UserRequestDTO userReturned = userRequestMapper.EntityToDto(user);
+		return userReturned;
 	}
 
 }

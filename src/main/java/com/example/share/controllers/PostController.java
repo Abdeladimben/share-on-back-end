@@ -19,7 +19,7 @@ import com.example.share.dto.PostCreatedDTO;
 import com.example.share.dto.PostDTO;
 import com.example.share.exception.GeneralException;
 import com.example.share.exception.NoContentException;
-import com.example.share.serviceInterfaces.PostService;
+import com.example.share.services.IPostService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 public class PostController {
 	
 	@Autowired
-	PostService postServiceImpl;
+	IPostService postServiceImpl;
 
 	@GetMapping({"","/"})
 	@ApiResponses({ @ApiResponse(code = 500, message = "Une erreur système s'est produite") })

@@ -31,12 +31,12 @@ public class SecurityConfig {
 	        "/swagger-ui/**",
 	        "/v2/api-docs",
 	        "/webjars/**",
+	        "/api/v1/shareon/user/**"
 	        
 	};
 	
 	private static final String[] AUTH_ACCOUNT = {
-	        "/api/v1/shareon/account/login",
-	        "/api/v1/shareon/account/create-account",
+	        "/api/v1/shareon/user/**"
 
 	};
 	
@@ -52,14 +52,13 @@ public class SecurityConfig {
 			.csrf()
 			.disable()
 			.cors(Customizer.withDefaults())
-			.authorizeRequests()
-			.antMatchers(AUTH_WHITELIST).permitAll()
-			.antMatchers(AUTH_ACCOUNT).permitAll()
-			.anyRequest()
-			.authenticated()
-			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.authorizeRequests()
+			.antMatchers(AUTH_WHITELIST).permitAll()
+			.anyRequest()
+			.anonymous()
 			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(entryPoint)

@@ -19,7 +19,7 @@ import com.example.share.dto.ProfilDTO;
 import com.example.share.dto.ProfilLightDTO;
 import com.example.share.exception.GeneralException;
 import com.example.share.exception.NoContentException;
-import com.example.share.serviceInterfaces.ProfilService;
+import com.example.share.services.IProfilService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 public class ProfilController {
 	
 	@Autowired
-	ProfilService profilServiceImpl;
+	IProfilService profilServiceImpl;
 	
 	@GetMapping({"","/"})
 	@ApiResponses({ @ApiResponse(code = 500, message = "Une erreur système s'est produite") })

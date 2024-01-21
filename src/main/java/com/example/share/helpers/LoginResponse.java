@@ -1,6 +1,6 @@
 package com.example.share.helpers;
 
-import com.example.share.dto.AccountResponseDTO;
+import com.example.share.dto.UserResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +15,6 @@ public class LoginResponse {
 	
 	private String accessToken;
 	
-	private AccountResponseDTO accountResponseDTO;
+	private UserResponseDTO accountResponseDTO;
 
 }

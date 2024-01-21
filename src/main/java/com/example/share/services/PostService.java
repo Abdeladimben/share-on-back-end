@@ -20,10 +20,9 @@ import com.example.share.exception.NoContentException;
 import com.example.share.mapper.PostCreatedMapper;
 import com.example.share.mapper.PostMapper;
 import com.example.share.repositories.PostRepository;
-import com.example.share.serviceInterfaces.PostService;
 
 @Service
-public class PostServiceImpl implements PostService {
+public class PostService implements IPostService {
 	
 	@Autowired
 	PostRepository postRepository;

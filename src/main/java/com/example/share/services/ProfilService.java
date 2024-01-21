@@ -17,12 +17,12 @@ import com.example.share.entities.Profil;
 import com.example.share.enums.ErrorCode;
 import com.example.share.exception.GeneralException;
 import com.example.share.exception.NoContentException;
+import com.example.share.exception.TokenIsNotValidException;
 import com.example.share.mapper.ProfilLightMapper;
 import com.example.share.repositories.ProfilRepository;
-import com.example.share.serviceInterfaces.ProfilService;
 
 @Service
-public class ProfilServiceImpl implements ProfilService{
+public class ProfilService implements IProfilService{
 	
 	@Autowired
 	ProfilRepository profilRepository;
@@ -73,7 +73,7 @@ public class ProfilServiceImpl implements ProfilService{
 	
 
 	@Override
-	public ProfilLightDTO findByUserConnecte(String token) throws NoContentException {
+	public ProfilLightDTO findByUserConnecte(String token) throws NoContentException, TokenIsNotValidException {
 		// TODO Auto-generated method stub
 		String userEmail = jwtUtil.extractUserEmail(token);
 		Profil profil= profilRepository.findByUtilisateur_Email(userEmail)

@@ -49,7 +49,7 @@ public class Profil extends BaseModel{
 	private LocalDate dateNaissance; 
 	
 	@OneToOne
-	private Account utilisateur;
+	private User utilisateur;
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Post> posts;

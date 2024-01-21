@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.share.repositories.AccountRepository;
+import com.example.share.repositories.UserRepository;
 
 public class AccountRepositoryTest {
 

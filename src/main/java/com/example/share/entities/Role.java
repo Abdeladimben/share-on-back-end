@@ -31,6 +31,6 @@ public class Role extends BaseModel{
 	
 	@Column
 	@Enumerated(EnumType.STRING)
-	private Roles nom;
+	private Roles intitule;
 
 }

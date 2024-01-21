@@ -1,4 +1,4 @@
-package com.example.share.serviceInterfaces;
+package com.example.share.services;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import com.example.share.dto.ProfilLightDTO;
 import com.example.share.exception.GeneralException;
 import com.example.share.exception.NoContentException;
 
-public interface PostService {
+public interface IPostService {
 
 	public PageResponse<PostDTO> findAll(int pageNumber,int elementsNumber) throws NoContentException;
 	

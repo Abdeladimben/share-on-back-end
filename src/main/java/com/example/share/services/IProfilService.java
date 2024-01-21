@@ -1,4 +1,4 @@
-package com.example.share.serviceInterfaces;
+package com.example.share.services;
 
 import java.util.List;
 
@@ -6,8 +6,9 @@ import com.example.share.dto.PageResponse;
 import com.example.share.dto.ProfilLightDTO;
 import com.example.share.exception.GeneralException;
 import com.example.share.exception.NoContentException;
+import com.example.share.exception.TokenIsNotValidException;
 
-public interface ProfilService {
+public interface IProfilService {
 	
 	PageResponse<ProfilLightDTO> findAll(int pageNumber,int elementsNumber) throws NoContentException;
 	
@@ -15,7 +16,7 @@ public interface ProfilService {
 	
 	ProfilLightDTO findByNomUtilisateur(String nomUtilisateur) throws NoContentException;
 	
-	ProfilLightDTO findByUserConnecte(String token) throws NoContentException;
+	ProfilLightDTO findByUserConnecte(String token) throws NoContentException, TokenIsNotValidException;
 	
 	ProfilLightDTO create(ProfilLightDTO profilLightDTO) throws NoContentException, GeneralException;
 

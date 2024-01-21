@@ -23,16 +23,24 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		
 		response.setContentType(MediaType.APPLICATION_JSON.toString());
-		response.setStatus(HttpStatus.UNAUTHORIZED.value()); 
-		System.out.println(request.getRequestURI());
-		response.getOutputStream()
-						.println(
-								objectMapper.writeValueAsString(
-												new ErrorDetail(ErrorCode.U005,HttpStatus.UNAUTHORIZED.name(),request.getRequestURL().toString())
-											)
-						);
+		if(authException.toString().contains("UsernameNotFoundException")) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value()); 
+			response.getOutputStream()
+				.println(
+					objectMapper.writeValueAsString(
+						new ErrorDetail(ErrorCode.U001,request.getRequestURL().toString())
+					)
+				);
+		}else {
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.getOutputStream()
+				.println(
+					objectMapper.writeValueAsString(
+						new ErrorDetail(ErrorCode.U005,request.getRequestURL().toString())
+					)
+				);
+		}		
 		
 	}
 

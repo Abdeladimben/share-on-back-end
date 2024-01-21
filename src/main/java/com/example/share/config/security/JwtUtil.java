@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.example.share.enums.ErrorCode;
+import com.example.share.exception.TokenIsNotValidException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 
 @Component
 public class JwtUtil {
@@ -39,29 +43,34 @@ public class JwtUtil {
 		JwtUtil.refreshExpirationDateInMs = refreshExpirationDateInMs;
 	}
 	
-	public String extractUserEmail(String token)  {
+	public String extractUserEmail(String token) throws TokenIsNotValidException  {
 		return extractClaim(token,Claims::getSubject);
 	}
 	
-	public Date extractExpiration(String token)  {
+	public Date extractExpiration(String token) throws TokenIsNotValidException  {
 		return extractClaim(token,Claims::getExpiration);
 	}
 	
-	private boolean hasClaim(String token,String claimName)  {
+	private boolean hasClaim(String token,String claimName) throws TokenIsNotValidException  {
 		final Claims claims =extractAllClaims(token);
 		return claims.get(claimName) != null;
 	}
 	
-	public <T> T extractClaim(String token,Function<Claims, T> ClaimsResolver) {
+	public <T> T extractClaim(String token,Function<Claims, T> ClaimsResolver) throws TokenIsNotValidException {
 		final Claims claims=extractAllClaims(token);
 		return ClaimsResolver.apply(claims);
 	}
 	
-	private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(keyStoreConfig.getJwtSigningPrivateKey()).parseClaimsJws(token).getBody();
+	private Claims extractAllClaims(String token) throws TokenIsNotValidException {
+		try {
+			return Jwts.parser().setSigningKey(keyStoreConfig.getJwtSigningPrivateKey()).parseClaimsJws(token).getBody();
+		}catch(SignatureException ex) {
+			throw new TokenIsNotValidException(ErrorCode.T001);
+		}
+        
     }
 	
-	public boolean isTokenExpired(String token)  {
+	public boolean isTokenExpired(String token) throws TokenIsNotValidException  {
 		return extractExpiration(token).before(new Date());
 	}
 	
@@ -83,7 +92,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.RS256, keyStoreConfig.getJwtSigningPrivateKey()).compact();
 	}
 	
-	public boolean isTokenValid(String token , UserDetails userDetails)  {
+	public boolean isTokenValid(String token , UserDetails userDetails) throws TokenIsNotValidException  {
 		final String userEmail=extractUserEmail(token);
 		return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}

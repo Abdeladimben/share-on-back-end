@@ -2,7 +2,9 @@ package com.example.share.enums;
 
 public enum ErrorCode {
 	
-	A001(""), A002("compte n'existe pas"), P002("Le poste n'existe pas"),P003("Aucun Poste en bd"),
+	A001(""),
+	T001("Token n'est pas valide !"),T002("Token est expiré !"),
+	A002("compte n'existe pas"), P002("Le poste n'existe pas"),P003("Aucun Poste en bd"),
 	PR002("Le profil n'existe pas"),PR003("Aucun Profil en bd"),PR004("Username existe déja"),
 	A500("Une erreur système s'est produite"),AE100("Email exist déja !"), 
 	Z001("Vous n'avez pas le droit d'accèder à cette ressource"),

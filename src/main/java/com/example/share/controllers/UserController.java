@@ -1,5 +1,7 @@
 package com.example.share.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import com.example.share.dto.UserRequestDTO;
 
 import com.example.share.dto.UserWithoutRoleDTO;
 import com.example.share.exception.EmailAlreadyExistsException;
+import com.example.share.exception.PasswordIsNotValidException;
 import com.example.share.exception.TokenIsExpiredException;
 import com.example.share.exception.TokenIsNotValidException;
 import com.example.share.helpers.LoginResponse;
@@ -37,12 +40,13 @@ public class UserController {
 	}
 	
 	@PostMapping("/create-user")
-	public ResponseEntity<UserRequestDTO> createuser(@RequestBody UserWithoutRoleDTO userWithoutRoleDTO) throws EmailAlreadyExistsException{
+	public ResponseEntity<UserRequestDTO> createuser(@RequestBody UserWithoutRoleDTO userWithoutRoleDTO) throws EmailAlreadyExistsException, PasswordIsNotValidException{
 		return new ResponseEntity<>(userService.create(userWithoutRoleDTO),HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/info")
-	public ResponseEntity<UserRequestDTO> getInfoUser(@RequestHeader String accessToken) throws EmailAlreadyExistsException, TokenIsExpiredException, TokenIsNotValidException{
+	public ResponseEntity<UserRequestDTO> getInfoUser(HttpServletRequest request) throws EmailAlreadyExistsException, TokenIsExpiredException, TokenIsNotValidException{
+		String accessToken = request.getHeader("Authorization");
 		return new ResponseEntity<>(userService.info(accessToken),HttpStatus.OK);
 	}
 	

@@ -8,7 +8,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class Utils {
 
 	private static final String DELIMITER = "/";
+
+	private final static String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+
 
 	private Utils() {
 		throw new IllegalStateException("Utils class");
@@ -72,5 +78,11 @@ public class Utils {
 
 	public static <R> Predicate<R> not(Predicate<R> predicate) {
 		return predicate.negate();
+	}
+	
+	public static boolean validatePassword(final String password) {
+		Pattern pattern = Pattern.compile(PASSWORD_REGEX);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
 	}
 }

@@ -4,6 +4,7 @@ public enum ErrorCode {
 	
 	A001(""),
 	T001("Token n'est pas valide !"),T002("Token est expiré !"),
+	P001("Mot de passe n'est pas valide ."),
 	A002("compte n'existe pas"), P002("Le poste n'existe pas"),P003("Aucun Poste en bd"),
 	PR002("Le profil n'existe pas"),PR003("Aucun Profil en bd"),PR004("Username existe déja"),
 	A500("Une erreur système s'est produite"),AE100("Email exist déja !"), 

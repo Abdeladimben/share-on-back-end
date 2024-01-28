@@ -18,6 +18,8 @@ public class UserResponseDTO {
 
 	private String email;
 	
+	private String userName;
+	
 	private String nom;
 	
 	private String prenom;

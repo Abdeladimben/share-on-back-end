@@ -15,6 +15,6 @@ public class LoginResponse {
 	
 	private String accessToken;
 	
-	private UserResponseDTO accountResponseDTO;
+	private UserResponseDTO userResponseDTO;
 
 }

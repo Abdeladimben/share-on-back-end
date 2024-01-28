@@ -43,7 +43,6 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			filterChain.doFilter(request, response);
 			return;
 		}
-		System.out.println(13);
 		jwtToken=authHeader.substring(7);
 		
 		try {

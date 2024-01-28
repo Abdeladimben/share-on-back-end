@@ -31,7 +31,14 @@ public class SecurityConfig {
 	        "/swagger-ui/**",
 	        "/v2/api-docs",
 	        "/webjars/**",
-	        "/api/v1/shareon/user/**"
+	        "/api/v1/shareon/user/login",
+	        "/api/v1/shareon/user/create-user"
+	        
+	};
+	
+	private static final String[] AUTH_LIST = {
+	        "/api/v1/shareon/user/info",
+	        "/api/v1/shareon/**",
 	        
 	};
 	
@@ -57,8 +64,7 @@ public class SecurityConfig {
 			.and()
 			.authorizeRequests()
 			.antMatchers(AUTH_WHITELIST).permitAll()
-			.anyRequest()
-			.anonymous()
+			.antMatchers(AUTH_LIST).authenticated().anyRequest().permitAll()
 			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(entryPoint)

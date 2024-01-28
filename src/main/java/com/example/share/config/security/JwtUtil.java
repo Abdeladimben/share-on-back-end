@@ -64,7 +64,7 @@ public class JwtUtil {
 	private Claims extractAllClaims(String token) throws TokenIsNotValidException {
 		try {
 			return Jwts.parser().setSigningKey(keyStoreConfig.getJwtSigningPrivateKey()).parseClaimsJws(token).getBody();
-		}catch(SignatureException ex) {
+		}catch(SignatureException | IllegalArgumentException ex) {
 			throw new TokenIsNotValidException(ErrorCode.T001);
 		}
         
